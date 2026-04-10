@@ -1,49 +1,68 @@
-# 🚀 Edge AI Project: Arduino Nicla Vision + Edge Impulse
-
-# Train-Model-Using-Arduino-Nicla-Vision
-Learning Tiny ML and train a model using Arduino by collecting live data and deploy it on arduino again
+# 🚀 Edge AI Pipeline: Arduino Nicla Vision + Edge Impulse (Complete Guide)
 
 ## 📌 Overview
 
-This project demonstrates how to:
+This project demonstrates a full Edge AI workflow using:
 
-* Connect **Arduino Nicla Vision**
-* Collect image data
-* Train a machine learning model in the cloud (Edge Impulse)
-* Deploy the trained model back to the device
+* Arduino Nicla Vision
+* Edge Impulse
+
+You will:
+
+1. Set up environment (Node.js, Arduino CLI)
+2. Flash Edge Impulse firmware
+3. Collect image data
+4. Train a model in the cloud
+5. Deploy model using OpenMV firmware
 
 ---
 
 # 🧩 1. Prerequisites
 
-## 🔽 Software to Install
+## 🔽 Required Software
 
-### 1. Node.js (IMPORTANT)
+### ✅ 1. Node.js
 
-* Install **Node.js 20 LTS**
-* Download: https://nodejs.org
-  ⚠️ Do NOT use Node.js v22 (causes errors)
+* Use:
+
+  * Node.js 20 LTS (Windows recommended)
+  * Node.js 24 LTS (Ubuntu/Linux works fine)
+
+Download:
+
+* Node.js
 
 ---
 
-### 2. Python
+### ✅ 2. Python
 
 * Install Python 3.x
-* Download: https://www.python.org
 
 ---
 
-### 3. Arduino CLI (Optional but useful)
+### ✅ 3. Arduino CLI (REQUIRED)
 
-Install using Git Bash:
+Install:
 
 ```bash
 curl -fsSL https://raw.githubusercontent.com/arduino/arduino-cli/master/install.sh | sh
 ```
 
+Add to PATH:
+
+```bash
+export PATH=$PATH:$HOME/bin
+```
+
+Verify:
+
+```bash
+arduino-cli version
+```
+
 ---
 
-### 4. Edge Impulse CLI
+### ✅ 4. Edge Impulse CLI
 
 ```bash
 npm install -g edge-impulse-cli
@@ -59,16 +78,12 @@ edge-impulse-daemon --version
 
 # 🔌 2. Hardware Setup
 
-## Required:
+## Requirements:
 
 * Arduino Nicla Vision
 * USB cable
 
-### Connect Device:
-
-1. Plug Nicla Vision into PC
-2. Press reset button once
-3. Check connection:
+### Connect:
 
 ```bash
 arduino-cli board list
@@ -76,191 +91,206 @@ arduino-cli board list
 
 ---
 
-# 📡 3. Connect to Edge Impulse
+# ⚡ 3. Flash Edge Impulse Firmware (IMPORTANT STEP)
+
+👉 This step is REQUIRED before data collection.
+
+## Option A: Using CLI
 
 Run:
+
+```bash
+edge-impulse-daemon --clean
+```
+
+Follow prompts → it will flash firmware automatically
+
+---
+
+## Option B: Manual Firmware Flash
+
+1. Go to Edge Impulse:
+   https://studio.edgeimpulse.com
+
+2. Navigate:
+
+   * Devices → Connect Device → Arduino Nicla Vision
+
+3. Download firmware
+
+4. Flash using Arduino CLI:
+
+```bash
+arduino-cli upload -p /dev/ttyACM0 --fqbn arduino:mbed_nicla:nicla_vision firmware.ino
+```
+
+---
+
+# 📡 4. Connect Device to Edge Impulse
 
 ```bash
 edge-impulse-daemon
 ```
 
-### Steps:
+Steps:
 
-1. Login via browser
-2. Create or select project
-3. Device will appear in Edge Impulse dashboard
+1. Login in browser
+2. Select project
+3. Device connects successfully
 
 ---
 
-# 📷 4. Data Collection
+# 📷 5. Data Collection
 
-## Steps:
+1. Open:
+   https://studio.edgeimpulse.com
 
-1. Open: https://studio.edgeimpulse.com
 2. Go to **Devices**
-3. Select your device
+
+3. Select Nicla Vision
+
 4. Click **Collect Data**
 
-### Capture:
+## Capture:
 
-* Class 1 (e.g., object A)
-* Class 2 (e.g., object B)
-
-📌 Recommendation:
-
-* 50–100 images per class
-* Different lighting and angles
+* Multiple classes
+* 50–100 samples per class
+* Different angles & lighting
 
 ---
 
-# 🧠 5. Create Impulse (ML Pipeline)
+# 🧠 6. Create Impulse
 
 Go to **Impulse Design**
 
-### Configure:
+Configure:
 
-* Input: Image (96x96 or 160x160)
-* Processing Block: Image
-* Learning Block: Classification
+* Input: Image (96x96 / 160x160)
+* Processing: Image
+* Learning: Classification
 
-Click **Save Impulse**
+Save impulse
 
 ---
 
-# 🏋️ 6. Train Model
+# 🏋️ 7. Train Model
 
-1. Go to **Training**
-2. Click **Start Training**
+Go to **Training**
 
-### Output:
+Click:
+
+```text
+Start Training
+```
+
+Outputs:
 
 * Accuracy
-* Loss graph
+* Loss
 
 ---
 
-# 🧪 7. Test Model
+# 🧪 8. Test Model
 
-Go to **Live Classification**
+Go to:
+**Live Classification**
 
-* Point camera at object
-* View predictions in real-time
-
----
-
-# 📦 8. Deployment
-
-## Export Model
-
-1. Go to **Deployment**
-2. Select:
-
-   * Arduino Library
-3. Download ZIP file
+* Real-time camera inference
+* Verify predictions
 
 ---
 
-# 💻 9. Deploy Model to Arduino
+# 📦 9. Deployment
 
-## Option A: Arduino IDE (Recommended)
+## Select Deployment Type
 
-1. Open Arduino IDE
-2. Go to:
+Choose:
 
-   * Sketch → Include Library → Add .ZIP Library
-3. Select downloaded ZIP
-
-### Open Example:
-
-```
-File → Examples → Your Project → Nicla Vision
+```text
+OpenMV Firmware (Nicla Vision)
 ```
 
-### Select Board:
-
-```
-Arduino Nicla Vision
-```
-
-### Upload:
-
-Click Upload button
+Download firmware
 
 ---
 
-## Option B: Using Arduino CLI
+# 🔥 10. Deploy Using OpenMV
 
-Compile:
+## Install OpenMV IDE
 
-```bash
-arduino-cli compile --fqbn arduino:mbed_nicla:nicla_vision your_project
-```
+Download:
 
-Upload:
-
-```bash
-arduino-cli upload -p COMX --fqbn arduino:mbed_nicla:nicla_vision
-```
+* OpenMV IDE
 
 ---
 
-# 🔍 10. View Output
+## Flash Model Firmware
 
-Open Serial Monitor:
+1. Open OpenMV IDE
 
-```bash
-arduino-cli monitor -p COMX -c baudrate=115200
+2. Connect Nicla Vision
+
+3. Go to:
+
+   * Tools → Run Bootloader
+
+4. Upload downloaded firmware
+
+---
+
+## Run Model
+
+* Click **Run**
+* Camera starts inference
+* Output visible in serial console
+
+---
+
+# 💻 Optional: Arduino Deployment
+
+You can also deploy via Arduino:
+
+1. Select:
+
+```text
+Arduino Library
 ```
 
-### Output:
+2. Import ZIP into Arduino IDE
 
-* Predictions
-* Confidence values
-
----
-
-# 🧩 Troubleshooting
-
-## ❌ edge-impulse-daemon not working
-
-✔ Use Node.js 20
-✔ Reinstall CLI:
-
-```bash
-npm install -g edge-impulse-cli
-```
+3. Upload to board
 
 ---
 
-## ❌ Serialport / bindings error
+# 🔍 Troubleshooting
 
-✔ Caused by Node 22
-✔ Fix: downgrade to Node 20
+## ❌ Serialport / binding errors
+
+* Use Node 20 (Windows)
+* Or Node 24 (Linux)
 
 ---
 
-## ❌ npm install errors
-
-✔ Clear cache:
+## ❌ npm install corrupted
 
 ```bash
 npm cache clean --force
-```
-
-✔ Delete:
-
-```
-AppData\Local\npm-cache
-AppData\Roaming\npm\node_modules
 ```
 
 ---
 
 ## ❌ Device not detected
 
-✔ Check USB cable
-✔ Press reset
-✔ Verify COM port
+* Check USB cable
+* Press reset
+* Verify port
+
+---
+
+## ❌ Firmware not working
+
+* Reflash using OpenMV IDE
+* Ensure correct board selected
 
 ---
 
@@ -270,32 +300,32 @@ After deployment:
 
 * Device captures images
 * Runs ML model ON DEVICE
-* Outputs predictions in real time
+* Outputs predictions in real-time
 
 ---
 
-# 🚀 Next Improvements
+# 🚀 Advanced Ideas
 
-* Add object detection
-* Optimize model size
-* Use audio or sensor data
-* Deploy multiple models
+* Object detection instead of classification
+* Gesture recognition
+* Face detection
+* Edge AI robotics
 
 ---
 
 # 📌 Summary
 
-| Step | Description          |
-| ---- | -------------------- |
-| 1    | Install tools        |
-| 2    | Connect device       |
-| 3    | Link to Edge Impulse |
-| 4    | Collect data         |
-| 5    | Train model          |
-| 6    | Deploy to Arduino    |
+| Step | Task              |
+| ---- | ----------------- |
+| 1    | Install tools     |
+| 2    | Flash firmware    |
+| 3    | Connect device    |
+| 4    | Collect data      |
+| 5    | Train model       |
+| 6    | Deploy via OpenMV |
 
 ---
 
-# ✅ Done!
+# ✅ Project Complete 🎉
 
-Your Edge AI pipeline is now complete 🎉
+You now have a full Edge AI pipeline running on-device.
